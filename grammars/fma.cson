@@ -1,0 +1,220 @@
+'name': 'FMA'
+'scopeName': 'source.fma'
+'fileTypes': [
+  'fma'
+]
+'patterns': [
+  {
+    'comment': 'Line comments'
+    'begin': ';'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.comment.fma'
+    'end': '$'
+    'name': 'comment.line.semicolon.fma'
+  }
+  {
+    'begin': '''(?x)
+      (?=macro\\b)
+      (?<=^|\\s)(macro)\\s+
+      ([a-zA-Z_]\\w*)
+      \\s*(\\()
+    '''
+    'beginCaptures':
+      '1':
+        'name': 'keyword.control.def.fma'
+      '2':
+        'name': 'entity.name.function.fma'
+      '3':
+        'name': 'punctuation.definition.parameters.fma'
+    'end': '\\)'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.parameters.fma'
+    'comment': 'Macro declaration'
+    'name': 'meta.function.macro.with-arguments.fma'
+    'patterns': [
+      {
+        'begin': '(?![\\s,)])'
+        'end': '(?=,|\\)\\s*$)'
+        'patterns': [
+          {
+            'include': '$self'
+          }
+        ]
+      }
+    ]
+  }
+  {
+    'match': '''(?x)
+      (?=macro\\b)
+      (?<=^|\\s)(macro)\\s+
+      ([a-zA-Z_]\\w*)
+    '''
+    'captures':
+      '1':
+        'name': 'keyword.control.def.fma'
+      '2':
+        'name': 'entity.name.function.fma'
+    'comment': 'Macro declaration'
+    'name': 'meta.function.macro.without-arguments.fma'
+  }
+  {
+    'match': '''(?x)
+      (?=def\\b)
+      (?<=^|\\s)(def)\\s+
+      ([a-zA-Z_]\\w*)
+    '''
+    'captures':
+      '1':
+        'name': 'keyword.control.def.fma'
+      '2':
+        'name': 'entity.name.function.fma'
+    'comment': 'Method declaration'
+    'name': 'meta.function.method.without-arguments.fma'
+  }
+  {
+    'captures':
+      '1':
+        'name': 'keyword.control.module.fma'
+      '2':
+        'name': 'entity.name.type.module.fma'
+      '3':
+        'name': 'entity.other.inherited-class.module.first.fma'
+      '4':
+        'name': 'punctuation.separator.inheritance.fma'
+      '5':
+        'name': 'entity.other.inherited-class.module.second.fma'
+      '6':
+        'name': 'punctuation.separator.inheritance.fma'
+      '7':
+        'name': 'entity.other.inherited-class.module.third.fma'
+      '8':
+        'name': 'punctuation.separator.inheritance.fma'
+    'match': '''(?x)
+      ^\\s*(module)\\s+
+      (
+        ([A-Z]\\w*(::))?
+        ([A-Z]\\w*(::))?
+        ([A-Z]\\w*(::))*
+        [A-Z]\\w*
+      )
+    '''
+    'name': 'meta.module.go'
+  }
+  {
+    'comment': 'Interpreted string literals'
+    'begin': '"'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.string.begin.fma'
+    'end': '"'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.string.end.fma'
+    'name': 'string.quoted.double.fma'
+    'patterns': [
+      {
+        'include': '#string_escaped_char'
+      }
+      {
+        'include': '#string_placeholder'
+      }
+    ]
+  }
+  {
+    'comment': 'Floating-point literals'
+    'match': '(\\.\\d+([Ee][\-\+]\\d+)?i?)\\b|\\b\\d+\\.\\d*(([Ee][\-\+]\\d+)?i?\\b)?'
+    'name': 'constant.numeric.floating-point.fma'
+  }
+  {
+    'comment': 'Integers'
+    'match': '((\\$[0-9a-fA-F]+|\\b\\d+))\\b'
+    'name': 'constant.numeric.integer.fma'
+  }
+  {
+    'comment': 'Language constants'
+    'match': '\\b(true|false|nil)\\b'
+    'name': 'constant.language.fma'
+  }
+  {
+    'comment': 'symbols'
+    'match': '(?<!:)(:)([$a-zA-Z_]\\w*)'
+    'name': 'constant.other.symbol.fma'
+  }
+  {
+    'match': '\\b[A-Z]\\w*(?=((\\.|::)[A-Za-z]|\\[))'
+    'name': 'support.class.fma'
+  }
+  {
+    'match': '\\b[_A-Z]\\w*([\\?]|\\b)'
+    'name': 'variable.other.constant.fma'
+  }
+  {
+    'captures':
+      '1':
+        'name': 'punctuation.definition.constant.hashkey.fma'
+    'comment': 'symbols as hash key (1.9 syntax)'
+    'match': '(?>[a-zA-Z_]\\w*(?>[?!])?)(:)(?!:)'
+    'name': 'constant.other.symbol.hashkey.fma'
+  }
+  {
+    'begin': '\\b(?<!\\.|::)(require)\\b(?![?!])'
+    'captures':
+      '1':
+        'name': 'keyword.other.special-method.fma'
+    'end': '$|(?=#|})'
+    'name': 'meta.require.fma'
+    'patterns': [
+      {
+        'include': '$self'
+      }
+    ]
+  }
+  {
+    'match': '\\b(byte|word|declare|scope)\\b'
+    'name': 'keyword.function.kernel.fma'
+  }
+  {
+    'include': '#keywords'
+  }
+]
+'repository':
+  'string_escaped_char':
+    'patterns': [
+      {
+        'match': '\\\\([0-7]{3}|[abfnrtv\\\\\'"]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})'
+        'name': 'constant.character.escape.fma'
+      }
+      {
+        'match': '\\\\[^0-7xuUabfnrtv\\\'"]'
+        'name': 'invalid.illegal.unknown-escape.fma'
+      }
+    ]
+  'string_placeholder':
+    'patterns': [
+      {
+        'match': '#\\{[^}]*\\}'
+        'name': 'constant.other.placeholder.fma'
+      }
+    ]
+  'keywords':
+    'patterns': [
+      {
+        'comment': 'Flow control keywords'
+        'match': '\\b(case|if|elsif|when|else|end|begin|do|raise|return|unless)\\b'
+        'name': 'keyword.control.fma'
+      }
+      {
+        'match': '\\b(def|export|macro)\\b'
+        'name': 'keyword.function.fma'
+      }
+      {
+        'match': '\\bmodule\\b'
+        'name': 'keyword.package.fma'
+      }
+      {
+        'match': '\\bclass\\b'
+        'name': 'keyword.struct.fma'
+      }
+    ]

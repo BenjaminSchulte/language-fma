@@ -1,0 +1,10 @@
+{
+  "name": "language-fma",
+  "version": "0.5.1",
+  "description": "FMA language support in Atom",
+  "author": "Benjamin Schulte <benj@minschulte.de>",
+  "license": "MIT",
+  "engines": {
+    "atom": "*"
+  }
+}
